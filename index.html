@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countries</title>
+    <style>
+        html,
+        body {
+            width: 95%;
+            height: 100%;
+            margin: 0 auto;
+            background-color: powderblue;
+        }
+
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+            color: plum;
+            font-size: 80px;
+
+        }
+
+        img {
+            width: 50px;
+            height: 30px;
+        }
+
+        .CountriesList {
+            margin: 2px;
+            width: 90%;
+            overflow: auto;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid purple;
+            background-color: plum;
+        }
+
+        .myButton {
+            box-shadow: 3px 4px 0px 0px #899599;
+            background: linear-gradient(to bottom, #ededed 5%, #bab1ba 100%);
+            background-color: #ededed;
+            border: 1px solid #d6bcd6;
+            display: inline-block;
+            cursor: pointer;
+            color: purple;
+            font-family: Arial;
+            font-size: 17px;
+            padding: 7px 25px;
+            text-decoration: none;
+            text-shadow: 0px 1px 0px #e1e2ed;
+        }
+
+        .myButton:hover {
+            background: linear-gradient(to bottom, #bab1ba 5%, #ededed 100%);
+            background-color: #bab1ba;
+        }
+
+        .myButton:active {
+            position: relative;
+            top: 1px;
+        }
+
+        .input {
+            background-color: plum;
+            width: 300px;
+            height: 30px;
+        }
+    </style>
+</head>
+<center>
+
+    <body>
+        <h1>Search countries </h1>
+        <br>
+        <input class="input" type="text">
+        <br>
+        <br>
+        <button class="search myButton" onclick="getFocus()">Search</button>
+        <button class="all myButton" onclick="getFocus()">All</button>
+        <hr>
+        <div class="CountriesList"></div>
+        <script>
+
+            document.querySelector('.all').addEventListener('click', getAllCountries);
+            document.querySelector(".search").addEventListener('click', getOneCountry)
+
+            function getAllCountries() {
+                const url = "https://restcountries.eu/rest/v2/all"
+                getData(url, creatCountries)
+            }
+
+            function creatCountries() {
+                let countries = JSON.parse(this.responseText);
+                let header = `<tr><th>Name</th><th>Top level domain</th><th>Capital</th><th>Currencies code</th><th>Currencies name</th><th>Currencies symbol</th><th>Flag</th><th>Borders</th></tr>`;
+                let html = countries.map(country => `<tr>
+                    <td>${country.name}</a></td>
+                    <td>${country.topLevelDomain}</td>
+                    <td>${country.capital}</td>
+                    <td>${country.currencies[0].code}</td>
+                    <td>${country.currencies[0].name}</td>
+                    <td>${country.currencies[0].symbol}</td>
+                    <td><img src="${country.flag}"></td>
+                    <td>${country.borders}</td>
+                    </tr>`).join('');
+                let CountriesList = document.querySelector('.CountriesList');
+                CountriesList.innerHTML =
+                    "<table border='1'>" + header + html + "</table>";
+                    
+            }
+
+
+            function getOneCountry() {
+                const countryInput = document.querySelector("input").value;
+                if (countryInput === "") {
+                    alert('Select a country and then just click the button!!!')
+                }
+                const url = "https://restcountries.eu/rest/v2/name/" + countryInput;
+                getData(url, creatSelectedCounties)
+            }
+
+            function creatSelectedCounties() {
+                let countries = JSON.parse(this.responseText);
+                let header = `<tr><th>Name</th><th>Top level domain</th><th>Capital</th><th>Currencies code</th><th>Currencies name</th><th>Currencies symbol</th><th>Flag</th><th>Borders</th></tr>`;
+                let html = countries.map(country => `<tr>
+                    <td>${country.name}</a></td>
+                    <td>${country.topLevelDomain}</td>
+                    <td>${country.capital}</td>
+                    <td>${country.currencies[0].code}</td>
+                    <td>${country.currencies[0].name}</td>
+                    <td>${country.currencies[0].symbol}</td>
+                    <td><img src="${country.flag}"></td>
+                    <td></td>
+                    </tr>`).join('');
+                let CountriesList = document.querySelector('.CountriesList');
+                CountriesList.innerHTML =
+                    "<table border='1'>" + header + html + "</table>";
+            }
+
+            function getData(url, cb) {
+                const xhr = new XMLHttpRequest();
+                xhr.addEventListener('load', cb);
+                xhr.open('GET', url);
+                xhr.send();
+            }
+
+            function getFocus() {
+                document.querySelector(".input").focus();
+            }
+
+        </script>
+    </body>
+</center>
+
+
+</html>
